@@ -1,4 +1,11 @@
-import {useState} from 'react'
+import {useEffect, useState} from 'react'
+import {
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuItems,
+  Transition,
+} from "@headlessui/react";
 import { logo } from '../assets'
 import { IoClose, IoSearchOutline } from "react-icons/io5";
 import { FiShoppingBag, FiStar, FiUser } from 'react-icons/fi';
@@ -6,10 +13,55 @@ import { FiShoppingBag, FiStar, FiUser } from 'react-icons/fi';
 import Container from './Container';
 import { FaChevronDown } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+import { getData } from '../lib';
+import ProductCard from "./ProductCard";
+import { config } from "../../config";
+import { CategoryProps, ProductProps } from "../../type.ts";
 // import store from '../lib/store';
 
 const Header = () => {
   const [serchText,setSearchText] = useState("")
+  const [categories, setCategories] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const endpoint = `${config?.baseUrl}/products`;
+      try {
+        const data = await getData(endpoint);
+        setProducts(data);
+      } catch (error) {
+        console.error("Error fetching data", error);
+      }
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const endpoint = `${config?.baseUrl}/categories`;
+      try {
+        const data = await getData(endpoint);
+        setCategories(data);
+      } catch (error) {
+        console.error("Error fetching data", error);
+      }
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const filtered = products.filter((item: ProductProps) =>
+      item.name.toLowerCase().includes(serchText.toLowerCase())
+    );
+    setFilteredProducts(filtered);
+  }, [products, serchText]);
+
+
+
+
+
   const bottomNavigation = [
     { title: "Home", link: "/" },
     { title: "Shop", link: "/product" },
@@ -37,6 +89,29 @@ const Header = () => {
           <span className="absolute top-2.5 right-4 text-xl" ><IoSearchOutline  /></span>
           }
       </div>
+      {serchText && (
+          <div className="absolute left-0 top-20 w-full mx-auto max-h-[500px] px-10 py-5 bg-white z-20 overflow-y-scroll text-black shadow-lg shadow-skyText scrollbar-hide">
+            {filteredProducts.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-5">
+                {filteredProducts?.map((item: ProductProps) => (
+                  <ProductCard
+                    key={item?._id}
+                    item={item}
+                    setSearchText={setSearchText}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="py-10 bg-gray-50 w-full flex items-center justify-center border border-gray-600 rounded-md">
+                <p className="text-xl font-normal">
+                  Nothing matches with your search keywords{" "}
+                  <span className="underline underline-offset-2 decoration-[1px] text-red-500 font-semibold">{`(${serchText})`}</span>
+                </p>
+                . Please try again
+              </div>
+            )}
+          </div>
+        )}
       {/* right part menubar */}
       <div className='flex items-center gap-x-6 text-2xl'>
         {/* <span className="hover:text-skyText duration-200 cursor-pointer"><FiUser /></span>
@@ -62,7 +137,41 @@ const Header = () => {
       {/* ===================================================secton two============================== */}
       <div className="w-full bg-darkText text-whiteText">
         <Container className="py-2 max-w-4xl flex items-center gap-5 justify-between">
-          <p className='flex items-center gap-1'>Select Category <span className="text-base mt-1" ><FaChevronDown /></span></p>
+        <Menu>
+            <MenuButton className="inline-flex items-center gap-2 rounded-md border border-gray-400 hover:border-white py-1.5 px-3 font-semibold text-gray-300 hover:text-whiteText">
+              Select Category <FaChevronDown className="text-base mt-1" />
+            </MenuButton>
+            <Transition
+              enter="transition ease-out duration-75"
+              enterFrom="opacity-0 scale-95"
+              enterTo="opacity-100 scale-100"
+              leave="transition ease-in duration-100"
+              leaveFrom="opacity-100 scale-100"
+              leaveTo="opacity-0 scale-95"
+            >
+              <MenuItems
+                anchor="bottom end"
+                className="w-52 origin-top-right rounded-xl border border-white/5 bg-black p-1 text-sm/6 text-gray-300 [--anchor-gap:var(--spacing-1)] focus:outline-none hover:text-white z-50"
+              >
+                {categories.map((item: CategoryProps) => (
+                  <MenuItem key={item?._id}>
+                    <Link
+                      to={`/category/${item?._base}`}
+                      className="flex w-full items-center gap-2 rounded-lg py-2 px-3 data-[focus]:bg-white/20 tracking-wide"
+                    >
+                      <img
+                        src={item?.image}
+                        alt="categoryImage"
+                        className="w-6 h-6 rounded-md"
+                      />
+                      {item?.name}
+                    </Link>
+                  </MenuItem>
+                ))}
+              </MenuItems>
+            </Transition>
+          </Menu>
+
           {bottomNavigation.map(({ title, link }) => (
             <Link to={link} key={title} className="uppercase hidden md:inline-flex text-sm font-semibold text-whiteText/90 hover:text-whiteText duration-200 relative overflow-hidden group">
               {title}
