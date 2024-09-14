@@ -1,11 +1,16 @@
+import Container from "./ui/Container"
+import Footer from "./ui/Footer"
+import Header from "./ui/Header"
 
 function App() {
-
   return (
     <main>
-      <p>
-        E-Commerce Demo
-      </p>
+      <Header />
+      <Container>
+      <p>ECommerce Demo</p>
+      </Container>
+      
+      <Footer />
     </main>
   )
 }
