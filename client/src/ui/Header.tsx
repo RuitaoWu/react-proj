@@ -9,35 +9,27 @@ import {
 import { logo } from '../assets'
 import { IoClose, IoSearchOutline } from "react-icons/io5";
 import { FiShoppingBag, FiStar, FiUser } from 'react-icons/fi';
-// import { Link } from "react-router-dom";
 import Container from './Container';
 import { FaChevronDown } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
-import { getData } from '../lib';
-import ProductCard from "./ProductCard";
 import { config } from "../../config";
 import { CategoryProps, ProductProps } from "../../type.ts";
+import { getData } from '../lib/index.ts';
 // import store from '../lib/store';
 
 const Header = () => {
   const [serchText,setSearchText] = useState("")
   const [categories, setCategories] = useState([]);
-  const [products, setProducts] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const endpoint = `${config?.baseUrl}/products`;
-      try {
-        const data = await getData(endpoint);
-        setProducts(data);
-      } catch (error) {
-        console.error("Error fetching data", error);
-      }
-    };
-    fetchData();
-  }, []);
-
+  const bottomNavigation = [
+    { title: "Home", link: "/" },
+    { title: "Shop", link: "/product" },
+    { title: "Cart", link: "/cart" },
+    { title: "Orders", link: "/orders" },
+    { title: "My Account", link: "/profile" },
+    { title: "Blog", link: "/blog" },
+  ];
+  
   useEffect(() => {
     const fetchData = async () => {
       const endpoint = `${config?.baseUrl}/categories`;
@@ -51,26 +43,7 @@ const Header = () => {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    const filtered = products.filter((item: ProductProps) =>
-      item.name.toLowerCase().includes(serchText.toLowerCase())
-    );
-    setFilteredProducts(filtered);
-  }, [products, serchText]);
 
-
-
-
-
-  const bottomNavigation = [
-    { title: "Home", link: "/" },
-    { title: "Shop", link: "/product" },
-    { title: "Cart", link: "/cart" },
-    { title: "Orders", link: "/orders" },
-    { title: "My Account", link: "/profile" },
-    { title: "Blog", link: "/blog" },
-  ];
-  // const { cartProduct, favoriteProduct, currentUser } = store();
   return (
     <div className='w-full bg-whiteText'>
       <div className='max-w-screen-xl mx-auto h-20 flex items-center justify-between px-4 lg:px-0'>
@@ -89,7 +62,7 @@ const Header = () => {
           <span className="absolute top-2.5 right-4 text-xl" ><IoSearchOutline  /></span>
           }
       </div>
-      {serchText && (
+      {/* {serchText && (
           <div className="absolute left-0 top-20 w-full mx-auto max-h-[500px] px-10 py-5 bg-white z-20 overflow-y-scroll text-black shadow-lg shadow-skyText scrollbar-hide">
             {filteredProducts.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-5">
@@ -111,7 +84,7 @@ const Header = () => {
               </div>
             )}
           </div>
-        )}
+        )} */}
       {/* right part menubar */}
       <div className='flex items-center gap-x-6 text-2xl'>
         {/* <span className="hover:text-skyText duration-200 cursor-pointer"><FiUser /></span>

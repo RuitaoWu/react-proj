@@ -1,6 +1,6 @@
 import { MdOutlineStarOutline } from "react-icons/md";
 import { ProductProps } from "../../type";
-import AddToCartBtn from "./AddToCartBtn";
+// import AddToCartBtn from "./AddToCartBtn";
 import { useState } from "react";
 import {
   Button,
@@ -11,10 +11,11 @@ import {
   TransitionChild,
 } from "@headlessui/react";
 import FormattedPrice from "./FormattedPrice";
-import ProductCardSideNav from "./ProductCardSideNav";
+
 import { useNavigate } from "react-router-dom";
 interface Props {
   item: ProductProps;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setSearchText?: any;
 }
 
@@ -33,7 +34,8 @@ const ProductCard = ({ item, setSearchText }: Props) => {
 
   const handleProduct = () => {
     navigation(`/product/${item?._id}`);
-    setSearchText && setSearchText("");
+    // setSearchText && setSearchText("");
+    setSearchText("");
   };
   return (
     <div className="border border-gray-200 rounded-lg p-1 overflow-hidden hover:border-black duration-200 cursor-pointer">
@@ -50,7 +52,7 @@ const ProductCard = ({ item, setSearchText }: Props) => {
           alt="productImage"
           className="w-full h-full rounded-md object-cover group-hover:scale-110 duration-300"
         />
-        <ProductCardSideNav product={item} />
+        {/* <ProductCardSideNav product={item} /> */}
       </div>
       <div className="flex flex-col gap-2 px-2 pb-2">
         <h3 className="text-xs uppercase font-semibold text-lightText">
@@ -64,7 +66,7 @@ const ProductCard = ({ item, setSearchText }: Props) => {
           <MdOutlineStarOutline />
           <MdOutlineStarOutline />
         </div>
-        <AddToCartBtn product={item} />
+        {/* <AddToCartBtn product={item} /> */}
       </div>
       <Transition appear show={isOpen}>
         <Dialog
