@@ -1,11 +1,12 @@
-import Container from "./ui/Container"
+import BannerCategories from "./ui/BannerCategories"
+import "react-multi-carousel/lib/styles.css";
 
 function App() {
   return (
     <main>
-      <Container>
-      <p>ECommerce Demo</p>
-      </Container>
+      <main>
+        <BannerCategories />
+      </main>
 
     </main>
   )
